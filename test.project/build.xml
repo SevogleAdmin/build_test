@@ -6,7 +6,6 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="test.project">
 	<property environment="env" />
-	<property name="ECLIPSE_HOME" value="/Users/kiwi/bin/eclipse-jee-kepler-SR2-macosx-cocoa-x86_64" />
 	<property name="junit.output.dir" value="junit" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.7" />
@@ -14,9 +13,9 @@
 	<property name="out" value="out" />
 	<property name="bin" value="bin" />
 	<path id="JUnit 4.libraryclasspath">
-		<pathelement location="${ECLIPSE_HOME}/plugins/org.junit_4.11.0.v201303080030/junit.jar" />
-		<pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" />
-		<pathelement location="path_to_the_junit_jar" />
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
 	</path>
 	<path id="test.project.classpath">
 		<pathelement location="bin" />
