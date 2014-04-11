@@ -23,6 +23,7 @@
 	</path>
 	<target name="init">
 		<mkdir dir="bin" />
+		<mkdir dir="bin-test" />
 		<copy includeemptydirs="false" todir="bin">
 			<fileset dir="src">
 				<exclude name="**/*.launch" />
@@ -38,14 +39,21 @@
 	</target>
 	<target name="clean">
 		<delete dir="bin" />
+		<delete dir="bin-test" />
 	</target>
 	<target depends="clean" name="cleanall" />
-	<target depends="build-subprojects,build-project,jar" name="build" />
+	<target depends="build-subprojects,build-project,build-test,jar,jar-test" name="build" />
 	<target name="build-subprojects" />
 	<target depends="init" name="build-project">
 		<echo message="${ant.project.name}: ${ant.file}" />
 		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
 			<src path="src" />
+			<classpath refid="test.project.classpath" />
+		</javac>
+	</target>
+	<target depends="init" name="build-test">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin-test" includeantruntime="false" source="${source}" target="${target}">
 			<src path="test" />
 			<classpath refid="test.project.classpath" />
 		</javac>
@@ -67,6 +75,29 @@
 				<attribute name="Build-Number" value="${build.number}" />
 			</manifest>
 			<fileset dir="src" includes="**/*.java" />
+		</jar>
+
+		<checksum>
+			<fileset dir="${out}" includes="*.jar" />
+			<fileset dir="${out}" includes="*.war" />
+		</checksum>
+	</target>
+	<target name="jar-test" depends="build-test" description="Create a module JAR file">
+		<!-- unless="jar.isCurrent" -->
+		<tstamp>
+			<format property="timestamp" pattern="yyyyMMdd_HHmmss" />
+			<format property="current.time" pattern="MM/dd/yyyy hh:mm:ss" />
+		</tstamp>
+		<mkdir dir="${out}" />
+		<!-- <jar destfile="${out}/common.web_${build.number}.jar" basedir="${bin}"> -->
+		<jar destfile="${out}/${ant.project.name}.test.jar" basedir="bin-test">
+			<manifest>
+				<section name="Copyright">
+					<attribute name="Copy" value="(C) Sevogle 2011" />
+				</section>
+				<attribute name="Build-Date" value="${current.time}" />
+				<attribute name="Build-Number" value="${build.number}" />
+			</manifest>
 			<fileset dir="test" includes="**/*.java" />
 		</jar>
 
@@ -106,7 +137,7 @@
 			<batchtest>
 				<zipfileset includes="**/*Test.class **/*Tests.class" excludes="**/*$$*">
 					<fileset dir="${out}" id="test.publish.id">
-						<include name="*.jar" />
+						<include name="*.test.jar" />
 					</fileset>
 				</zipfileset>
 			</batchtest>

@@ -1,7 +1,9 @@
-package test.project;
+package ex.project;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import ex.project.Foobar;
 
 public class FoobarTest {
     @Test
