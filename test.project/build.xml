@@ -11,26 +11,26 @@
 	<property name="target" value="1.7" />
 	<property name="source" value="1.7" />
 	<property name="out" value="out" />
-	<property name="bin" value="bin" />
+	<property name="bin" value="bin-ant" />
 	<path id="JUnit 4.libraryclasspath">
 		<fileset dir="lib">
 			<include name="*.jar" />
 		</fileset>
 	</path>
 	<path id="test.project.classpath">
-		<pathelement location="bin" />
+		<pathelement location="bin-ant" />
 		<path refid="JUnit 4.libraryclasspath" />
 	</path>
 	<target name="init">
-		<mkdir dir="bin" />
+		<mkdir dir="bin-ant" />
 		<mkdir dir="bin-test" />
-		<copy includeemptydirs="false" todir="bin">
+		<copy includeemptydirs="false" todir="bin-ant">
 			<fileset dir="src">
 				<exclude name="**/*.launch" />
 				<exclude name="**/*.java" />
 			</fileset>
 		</copy>
-		<copy includeemptydirs="false" todir="bin">
+		<copy includeemptydirs="false" todir="bin-test">
 			<fileset dir="test">
 				<exclude name="**/*.launch" />
 				<exclude name="**/*.java" />
@@ -38,7 +38,7 @@
 		</copy>
 	</target>
 	<target name="clean">
-		<delete dir="bin" />
+		<delete dir="bin-ant" />
 		<delete dir="bin-test" />
 	</target>
 	<target depends="clean" name="cleanall" />
@@ -46,7 +46,7 @@
 	<target name="build-subprojects" />
 	<target depends="init" name="build-project">
 		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin-ant" includeantruntime="false" source="${source}" target="${target}">
 			<src path="src" />
 			<classpath refid="test.project.classpath" />
 		</javac>
@@ -131,6 +131,14 @@
 		<path refid="JUnit 4.libraryclasspath" />
 	</path>
 	<target name="test" description="Test the Common.java project">
+		<exec executable="unzip">
+			<arg value="-t"/>
+			<arg value="out/test.project.jar"/>
+		</exec>
+		<exec executable="unzip">
+			<arg value="-t"/>
+			<arg value="out/test.project.test.jar"/>
+		</exec>
 		<junit fork="true" forkmode="once">
 			<classpath refid="test.run.classpath" />
 			<formatter type="brief" usefile="false" />
