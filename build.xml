@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="choosr">
+	<property environment="env" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.7" />
+	<property name="source" value="1.7" />
+	<property name="out" value="out" />
+	<target name="clean">
+		<subant target="clean" verbose="true">
+			<filelist
+				files="test.project" />
+		</subant>
+
+		<delete dir="../artifacts/test" failonerror="false" />
+	</target>
+
+
+	<target name="build">
+		<subant target="build" verbose="true">
+			<filelist files="test.project" />
+		</subant>
+	</target>
+
+	<target name="test">
+		<subant target="test" verbose="true">
+			<filelist files="test.project" />
+		</subant>
+	</target>
+</project>
+

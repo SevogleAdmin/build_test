@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="test.project">
+	<property environment="env" />
+	<property name="ECLIPSE_HOME" value="/Users/kiwi/bin/eclipse-jee-kepler-SR2-macosx-cocoa-x86_64" />
+	<property name="junit.output.dir" value="junit" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.7" />
+	<property name="source" value="1.7" />
+	<property name="out" value="out" />
+	<property name="bin" value="bin" />
+	<path id="JUnit 4.libraryclasspath">
+		<pathelement location="${ECLIPSE_HOME}/plugins/org.junit_4.11.0.v201303080030/junit.jar" />
+		<pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.3.0.v201303031735.jar" />
+		<pathelement location="path_to_the_junit_jar" />
+	</path>
+	<path id="test.project.classpath">
+		<pathelement location="bin" />
+		<path refid="JUnit 4.libraryclasspath" />
+	</path>
+	<target name="init">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="test">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+	</target>
+	<target name="clean">
+		<delete dir="bin" />
+	</target>
+	<target depends="clean" name="cleanall" />
+	<target depends="build-subprojects,build-project,jar" name="build" />
+	<target name="build-subprojects" />
+	<target depends="init" name="build-project">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+			<src path="src" />
+			<src path="test" />
+			<classpath refid="test.project.classpath" />
+		</javac>
+	</target>
+	<target name="jar" depends="build-project" description="Create a module JAR file">
+		<!-- unless="jar.isCurrent" -->
+		<tstamp>
+			<format property="timestamp" pattern="yyyyMMdd_HHmmss" />
+			<format property="current.time" pattern="MM/dd/yyyy hh:mm:ss" />
+		</tstamp>
+		<mkdir dir="${out}" />
+		<!-- <jar destfile="${out}/common.web_${build.number}.jar" basedir="${bin}"> -->
+		<jar destfile="${out}/${ant.project.name}.jar" basedir="${bin}">
+			<manifest>
+				<section name="Copyright">
+					<attribute name="Copy" value="(C) Sevogle 2011" />
+				</section>
+				<attribute name="Build-Date" value="${current.time}" />
+				<attribute name="Build-Number" value="${build.number}" />
+			</manifest>
+			<fileset dir="src" includes="**/*.java" />
+			<fileset dir="test" includes="**/*.java" />
+		</jar>
+
+		<checksum>
+			<fileset dir="${out}" includes="*.jar" />
+			<fileset dir="${out}" includes="*.war" />
+		</checksum>
+	</target>
+
+	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects" />
+	<target name="FoobarTest">
+		<mkdir dir="${junit.output.dir}" />
+		<junit fork="yes" printsummary="withOutAndErr">
+			<formatter type="xml" />
+			<test name="test.project.FoobarTest" todir="${junit.output.dir}" />
+			<classpath refid="test.project.classpath" />
+		</junit>
+	</target>
+	<target name="junitreport">
+		<junitreport todir="${junit.output.dir}">
+			<fileset dir="${junit.output.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${junit.output.dir}" />
+		</junitreport>
+	</target>
+	<path id="test.run.classpath">
+		<fileset dir="${out}">
+			<include name="*.jar" />
+		</fileset>
+		<path refid="JUnit 4.libraryclasspath" />
+	</path>
+	<target name="test" description="Test the Common.java project">
+		<junit fork="true" forkmode="once">
+			<classpath refid="test.run.classpath" />
+			<formatter type="brief" usefile="false" />
+			<batchtest>
+				<zipfileset includes="**/*Test.class **/*Tests.class" excludes="**/*$$*">
+					<fileset dir="${out}" id="test.publish.id">
+						<include name="*.jar" />
+					</fileset>
+				</zipfileset>
+			</batchtest>
+		</junit>
+	</target>
+
+</project>
