@@ -26,5 +26,12 @@
 			<filelist files="test.project" />
 		</subant>
 	</target>
+
+	<target name="test-artifacts">
+		<subant target="test-artifacts" verbose="true">
+			<filelist files="test.project" />
+		</subant>
+	</target>
+
 </project>
 

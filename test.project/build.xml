@@ -12,6 +12,7 @@
 	<property name="source" value="1.7" />
 	<property name="out" value="out" />
 	<property name="bin" value="bin-ant" />
+	<property name="artifact.dir" value="../../artifacts" />
 	<path id="JUnit 4.libraryclasspath">
 		<fileset dir="lib">
 			<include name="*.jar" />
@@ -132,12 +133,12 @@
 	</path>
 	<target name="test" description="Test the Common.java project">
 		<exec executable="unzip">
-			<arg value="-t"/>
-			<arg value="out/test.project.jar"/>
+			<arg value="-t" />
+			<arg value="out/test.project.jar" />
 		</exec>
 		<exec executable="unzip">
-			<arg value="-t"/>
-			<arg value="out/test.project.test.jar"/>
+			<arg value="-t" />
+			<arg value="out/test.project.test.jar" />
 		</exec>
 		<junit fork="true" forkmode="once">
 			<classpath refid="test.run.classpath" />
@@ -151,5 +152,30 @@
 			</batchtest>
 		</junit>
 	</target>
-
+	<path id="test.artifacts.run.classpath">
+		<fileset dir="${artifact.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<target name="test-artifacts" description="Test the Common.java project">
+		<exec executable="unzip">
+			<arg value="-t" />
+			<arg value="${artifact.dir}/test.project.jar" />
+		</exec>
+		<exec executable="unzip">
+			<arg value="-t" />
+			<arg value="${artifact.dir}/test.project.test.jar" />
+		</exec>
+		<junit fork="true" forkmode="once">
+			<classpath refid="test.artifacts.run.classpath" />
+			<formatter type="brief" usefile="false" />
+			<batchtest>
+				<zipfileset includes="**/*Test.class **/*Tests.class" excludes="**/*$$*">
+					<fileset dir="${artifact.dir}" id="test.publish.id">
+						<include name="*.test.jar" />
+					</fileset>
+				</zipfileset>
+			</batchtest>
+		</junit>
+	</target>
 </project>
